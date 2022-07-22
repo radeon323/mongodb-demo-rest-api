@@ -25,7 +25,7 @@ class DefaultStoreOrderServiceTest {
     @Mock
     private StoreOrderRepository storeOrderRepository;
 
-    private StoreOrderService storeOrderService;
+    private DefaultStoreOrderService storeOrderService;
 
     @BeforeEach
     public void before() {
@@ -68,7 +68,9 @@ class DefaultStoreOrderServiceTest {
 
         Mockito.when(storeOrderRepository.findById("62d4584f69a5cb7a36a706f1")).thenReturn(Optional.of(firstOrder));
         StoreOrder actualOrder = storeOrderService.getById("62d4584f69a5cb7a36a706f1");
-
+        StoreOrder actualOrderCache = storeOrderService.getById("62d4584f69a5cb7a36a706f1");
+        assertEquals(actualOrderCache, storeOrderService.getCacheById().get("62d4584f69a5cb7a36a706f1"));
+        assertEquals(actualOrderCache, storeOrderService.getCacheByName().get("FirstOrder"));
         assertEquals("FirstOrder", actualOrder.getOrderName());
         assertEquals(1.1, actualOrder.getOrderPrice());
         assertEquals(LocalDateTime.of(2022, Month.FEBRUARY,24,4, 0), actualOrder.getOrderCreationDate());
@@ -81,7 +83,9 @@ class DefaultStoreOrderServiceTest {
 
         Mockito.when(storeOrderRepository.findStoreOrderByOrderName("FirstOrder")).thenReturn(Optional.of(firstOrder));
         StoreOrder actualOrder = storeOrderService.getByName("FirstOrder");
-
+        StoreOrder actualOrderCache = storeOrderService.getByName("FirstOrder");
+        assertEquals(actualOrderCache, storeOrderService.getCacheById().get("62d4584f69a5cb7a36a706f1"));
+        assertEquals(actualOrderCache, storeOrderService.getCacheByName().get("FirstOrder"));
         assertEquals("FirstOrder", actualOrder.getOrderName());
         assertEquals(1.1, actualOrder.getOrderPrice());
         assertEquals(LocalDateTime.of(2022, Month.FEBRUARY,24,4, 0), actualOrder.getOrderCreationDate());

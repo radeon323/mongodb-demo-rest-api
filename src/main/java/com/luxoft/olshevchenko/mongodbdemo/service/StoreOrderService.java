@@ -4,6 +4,9 @@ import com.luxoft.olshevchenko.mongodbdemo.entity.StoreOrder;
 
 import java.util.List;
 
+/**
+ * @author Oleksandr Shevchenko
+ */
 public interface StoreOrderService {
     List<StoreOrder> findAll();
     StoreOrder getById(String id);

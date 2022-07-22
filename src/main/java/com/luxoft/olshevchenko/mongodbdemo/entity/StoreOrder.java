@@ -7,6 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author Oleksandr Shevchenko
+ */
 @Data
 @Document
 public class StoreOrder {
