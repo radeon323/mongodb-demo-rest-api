@@ -89,13 +89,13 @@ public class DefaultStoreOrderService implements StoreOrderService {
     @Override
     public synchronized StoreOrder save(StoreOrder storeOrder) {
         storeOrder.setOrderCreationDate(LocalDateTime.now());
-        
+
         String id = storeOrder.getOrderId();
-        if (cacheById.containsKey(id)) {
+        if (id != null && cacheById.containsKey(id)) {
             cacheById.put(id, storeOrder);
         }
         String name = storeOrder.getOrderName();
-        if (cacheByName.containsKey(name)) {
+        if (id != null && cacheByName.containsKey(name)) {
             cacheByName.put(name, storeOrder);
         }
 
