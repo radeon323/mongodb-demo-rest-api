@@ -90,4 +90,32 @@ class DefaultStoreOrderServiceTest {
         assertEquals(1.1, actualOrder.getOrderPrice());
         assertEquals(LocalDateTime.of(2022, Month.FEBRUARY,24,4, 0), actualOrder.getOrderCreationDate());
     }
+
+    @Test
+    void testReturnStoreOrderIdWhenDeleteRequest() {
+        StoreOrder firstOrder = new StoreOrder("FirstOrder", 1.1, LocalDateTime.of(2022, Month.FEBRUARY,24,4, 0));
+        firstOrder.setOrderId("62d4584f69a5cb7a36a706f1");
+
+        StoreOrder actualOrderCache = storeOrderService.getByName("FirstOrder");
+        assertEquals(actualOrderCache, storeOrderService.getCacheById().get("62d4584f69a5cb7a36a706f1"));
+        assertEquals(actualOrderCache, storeOrderService.getCacheByName().get("FirstOrder"));
+
+        String id = storeOrderService.delete("62d4584f69a5cb7a36a706f1");
+        assertEquals("62d4584f69a5cb7a36a706f1", id);
+        assertNull(storeOrderService.getCacheById().get("62d4584f69a5cb7a36a706f1"));
+        assertNull(storeOrderService.getCacheByName().get("FirstOrder"));
+    }
+
+    @Test
+    void testReturnStoreOrderWhenSaveOrUpdateRequest() {
+        StoreOrder firstOrder = new StoreOrder("FirstOrder", 1.1, LocalDateTime.of(2022, Month.FEBRUARY,24,4, 0));
+        firstOrder.setOrderId("62d4584f69a5cb7a36a706f1");
+
+        StoreOrder actualOrder = storeOrderService.save(firstOrder);
+        assertEquals(firstOrder, actualOrder);
+        assertNull(storeOrderService.getCacheById().get("62d4584f69a5cb7a36a706f1"));
+        assertNull(storeOrderService.getCacheByName().get("FirstOrder"));
+    }
+
+
 }

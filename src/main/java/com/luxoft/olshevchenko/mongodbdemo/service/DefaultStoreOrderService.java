@@ -71,7 +71,7 @@ public class DefaultStoreOrderService implements StoreOrderService {
     }
 
     @Override
-    public synchronized void delete(String id) {
+    public synchronized String delete(String id) {
         Optional<StoreOrder> optionalOrder = repository.findById(id);
         if (optionalOrder.isPresent()) {
             StoreOrder order = cacheById.get(id);
@@ -83,10 +83,11 @@ public class DefaultStoreOrderService implements StoreOrderService {
         } else {
             logger.info("Order with id {} does not exists!", id);
         }
+        return id;
     }
 
     @Override
-    public synchronized void save(StoreOrder storeOrder) {
+    public synchronized StoreOrder save(StoreOrder storeOrder) {
         storeOrder.setOrderCreationDate(LocalDateTime.now());
         
         String id = storeOrder.getOrderId();
@@ -100,6 +101,7 @@ public class DefaultStoreOrderService implements StoreOrderService {
 
         repository.save(storeOrder);
         logger.info("Order with id {} has been created!", storeOrder.getOrderId());
+        return storeOrder;
     }
 
 

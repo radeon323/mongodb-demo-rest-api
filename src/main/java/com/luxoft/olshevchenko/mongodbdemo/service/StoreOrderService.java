@@ -11,6 +11,6 @@ public interface StoreOrderService {
     List<StoreOrder> findAll();
     StoreOrder getById(String id);
     StoreOrder getByName(String name);
-    void delete(String id);
-    void save(StoreOrder storeOrder);
+    String delete(String id);
+    StoreOrder save(StoreOrder storeOrder);
 }
