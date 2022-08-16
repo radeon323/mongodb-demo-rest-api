@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author Oleksandr Shevchenko
  */
 @Data
-@Document
+@Document(collection = "storeOrder")
 public class StoreOrder {
 
     @Id
@@ -29,4 +29,6 @@ public class StoreOrder {
         this.orderPrice = orderPrice;
         this.orderCreationDate = orderCreationDate;
     }
+
+
 }

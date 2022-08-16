@@ -74,10 +74,11 @@ public class DefaultStoreOrderService implements StoreOrderService {
     public synchronized String delete(String id) {
         Optional<StoreOrder> optionalOrder = repository.findById(id);
         if (optionalOrder.isPresent()) {
-            StoreOrder order = cacheById.get(id);
-            cacheByName.remove(order.getOrderName());
-            cacheById.remove(id);
-            
+            if (cacheById.containsKey(id)) {
+                StoreOrder order = cacheById.get(id);
+                cacheByName.remove(order.getOrderName());
+                cacheById.remove(id);
+            }
             repository.deleteById(id);
             logger.info("Order with id {} has been deleted!", id);
         } else {
@@ -100,6 +101,7 @@ public class DefaultStoreOrderService implements StoreOrderService {
         }
 
         repository.save(storeOrder);
+
         logger.info("Order with id {} has been created!", storeOrder.getOrderId());
         return storeOrder;
     }

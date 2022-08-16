@@ -2,12 +2,17 @@ package com.luxoft.olshevchenko.mongodbdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luxoft.olshevchenko.mongodbdemo.entity.StoreOrder;
+import com.luxoft.olshevchenko.mongodbdemo.testutils.SpringSecurityWebAuxTestConfig;
 import com.luxoft.olshevchenko.mongodbdemo.service.StoreOrderService;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -23,7 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Oleksandr Shevchenko
  */
-@WebMvcTest(StoreOrderController.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = SpringSecurityWebAuxTestConfig.class
+)
+@AutoConfigureMockMvc
+@WithUserDetails("admin")
 class StoreOrderControllerTest {
 
     @Autowired
@@ -34,6 +45,7 @@ class StoreOrderControllerTest {
 
     @MockBean
     private StoreOrderService storeOrderService;
+
 
     @Test
     void testFetchStoreOrders() throws Exception {
