@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -86,6 +87,7 @@ class ApiUserControllerTest {
         when(apiUserService.findAll()).thenReturn(usersList);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/users/")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -103,6 +105,7 @@ class ApiUserControllerTest {
         when(apiUserService.getById("62fa602bbed1775efd45dde3")).thenReturn(admin);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/users/?id={id}", "62fa602bbed1775efd45dde3")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -117,6 +120,7 @@ class ApiUserControllerTest {
         when(apiUserService.getByName("admin")).thenReturn(admin);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/users/?name={name}", "admin")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))

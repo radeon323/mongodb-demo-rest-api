@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -63,6 +64,7 @@ class StoreOrderControllerTest {
         when(storeOrderService.findAll()).thenReturn(storeOrderList);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/store-orders/")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -83,6 +85,7 @@ class StoreOrderControllerTest {
         when(storeOrderService.getById("62d4584f69a5cb7a36a706f1")).thenReturn(firstOrder);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/store-orders?id={id}","62d4584f69a5cb7a36a706f1")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -99,6 +102,7 @@ class StoreOrderControllerTest {
         when(storeOrderService.getByName("FirstOrder")).thenReturn(firstOrder);
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/v1/store-orders?name={name}","FirstOrder")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -114,6 +118,7 @@ class StoreOrderControllerTest {
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/v1/store-orders/")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOrder)))
                 .andExpect(status().isOk())
@@ -129,6 +134,7 @@ class StoreOrderControllerTest {
 
         mockMvc.perform( MockMvcRequestBuilders
                         .put("/api/v1/store-orders?id={id}","62d4584f69a5cb7a36a706f1")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOrder)))
                 .andExpect(status().isOk())
@@ -144,6 +150,7 @@ class StoreOrderControllerTest {
 
         mockMvc.perform( MockMvcRequestBuilders
                         .delete("/api/v1/store-orders?id={id}","62d4584f69a5cb7a36a706f1")
+                        .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOrder)))
                 .andExpect(status().isOk())

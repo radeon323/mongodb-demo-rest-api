@@ -1,7 +1,10 @@
 package com.luxoft.olshevchenko.mongodbdemo.security;
 
+import com.luxoft.olshevchenko.mongodbdemo.jwt.JwtConfig;
+import com.luxoft.olshevchenko.mongodbdemo.jwt.JwtTokenVerifier;
+import com.luxoft.olshevchenko.mongodbdemo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.luxoft.olshevchenko.mongodbdemo.service.DefaultApiUserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,7 +13,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.crypto.SecretKey;
 
 import static com.luxoft.olshevchenko.mongodbdemo.security.UserPermission.*;
 
@@ -20,16 +26,24 @@ import static com.luxoft.olshevchenko.mongodbdemo.security.UserPermission.*;
  */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final DefaultApiUserService apiUserService;
+    private final JwtConfig jwtConfig;
+    private final SecretKey secretKey;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
+                .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey), JwtUsernameAndPasswordAuthenticationFilter.class)
 
                 .authorizeRequests()
 
@@ -48,10 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,"/api/v1/users/**").hasAuthority(USER_WRITE.getPermission())
 
                 .anyRequest()
-                .authenticated()
-                .and()
-
-                .httpBasic();
+                .authenticated();
     }
 
     @Override
